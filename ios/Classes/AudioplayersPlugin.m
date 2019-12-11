@@ -422,7 +422,7 @@ float _playbackRate = 1.0;
   [[AVAudioSession sharedInstance] setActive:YES error:&error];
   
 
-  if (!playerInfo || ![url isEqualToString:playerInfo[@"url"]]) {
+  // if (!playerInfo || ![url isEqualToString:playerInfo[@"url"]]) {
     if (isLocal) {
       playerItem = [ [ AVPlayerItem alloc ] initWithURL:[ NSURL fileURLWithPath:url ]];
     } else {
@@ -473,11 +473,11 @@ float _playbackRate = 1.0;
                           options:0
                           context:(void*)playerId];
       
-  } else {
-    if ([[player currentItem] status ] == AVPlayerItemStatusReadyToPlay) {
-      onReady(playerId);
-    }
-  }
+  // } else {
+  //   if ([[player currentItem] status ] == AVPlayerItemStatusReadyToPlay) {
+  //     onReady(playerId);
+  //   }
+  // }
 }
 
 -(void) play: (NSString*) playerId
