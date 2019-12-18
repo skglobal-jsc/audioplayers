@@ -540,6 +540,7 @@ class AudioPlayer {
         player.durationHandler?.call(newDuration);
         break;
       case 'audio.onCurrentPosition':
+        if (player.state == AudioPlayerState.STOPPED) return;
         Duration newDuration = Duration(milliseconds: value);
         player._positionController.add(newDuration);
         // ignore: deprecated_member_use_from_same_package
@@ -590,7 +591,7 @@ class AudioPlayer {
     if (!_seekCompleteController.isClosed)
       futures.add(_seekCompleteController.close());
     if (!_errorController.isClosed) futures.add(_errorController.close());
-
+    futures.add(_invokeMethod('releaseResource'));
     await Future.wait(futures);
   }
 }

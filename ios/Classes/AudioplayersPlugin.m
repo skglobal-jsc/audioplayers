@@ -249,7 +249,13 @@ float _playbackRate = 1.0;
                     NSString *releaseMode = call.arguments[@"releaseMode"];
                     bool looping = [releaseMode hasSuffix:@"LOOP"];
                     [self setLooping:looping playerId:playerId];
-                  }
+                  },
+                @"releaseResource":
+                ^{
+                    NSLog(@"releaseResource");
+                    [self releaseResourceOfPlayerId:playerId];
+                    result(@(1));
+                }
                 };
 
   [ self initPlayerInfo:playerId ];
@@ -478,6 +484,31 @@ float _playbackRate = 1.0;
   //     onReady(playerId);
   //   }
   // }
+}
+
+-(void) releaseResourceOfPlayerId:(NSString*)playerId {
+    NSMutableDictionary * playerInfo = players[playerId];
+    AVPlayer *player = playerInfo[@"player"];
+    _currentPlayerId = playerId; // to be used for notifications command center
+    NSMutableSet *observers = playerInfo[@"observers"];
+    if (player == NULL) return;
+    
+    for (id value in timeobservers) {
+        if (value[@"player"] == player) {
+            [value[@"player"] removeTimeObserver:value[@"observer"]];
+            [timeobservers removeObject:value];
+            break;
+        }
+    }
+    [[player currentItem] removeObserver:self forKeyPath:@"player.currentItem.status" ];
+    
+    if (observers == NULL) return;
+    for (id ob in observers) {
+       [ [ NSNotificationCenter defaultCenter ] removeObserver:ob ];
+    }
+    [ observers removeAllObjects ];
+    
+    [players removeObjectForKey:playerId];
 }
 
 -(void) play: (NSString*) playerId
