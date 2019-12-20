@@ -115,6 +115,10 @@ public class AudioplayersPlugin implements MethodCallHandler {
                 player.setReleaseMode(releaseMode);
                 break;
             }
+            case "releaseResource": {
+                response.success(1);
+                return;
+            }
             default: {
                 response.notImplemented();
                 return;
